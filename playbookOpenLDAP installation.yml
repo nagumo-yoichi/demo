@@ -1,0 +1,96 @@
+---
+- name: Install and configure OpenLDAP
+  hosts: all
+  become: yes
+  vars:
+    ldap_domain: example.com
+    ldap_organization: Example org.
+    ldap_admin_password: securepassword
+    ldap_base_dn: dc=example,dc=com
+
+  tasks:
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+
+    - name: OpenLDAP prerequisites
+      apt:
+        name:
+          - ksh
+          - libtool-ltdl
+          - openssl
+          - perl
+          - lz4
+        state: present
+
+    - name: Install OpenLDAP and utilities
+      apt:
+        name:
+          - slapd
+          - ldap-utils
+        state: present
+
+    - name: Reconfigure OpenLDAP non-interactively
+      debconf:
+        name: slapd
+        question: slapd/domain
+        value: "{{ ldap_domain }}"
+        vtype: string
+
+    - name: Set OpenLDAP organization name
+      debconf:
+        name: slapd
+        question: slapd/organization
+        value: "{{ ldap_organization }}"
+        vtype: string
+
+    - name: Set OpenLDAP admin password
+      debconf:
+        name: slapd
+        question: slapd/password1
+        value: "{{ ldap_admin_password }}"
+        vtype: password
+
+    - name: Set OpenLDAP admin password confirmation
+      debconf:
+        name: slapd
+        question: slapd/password2
+        value: "{{ ldap_admin_password }}"
+        vtype: password
+
+    - name: Reconfigure OpenLDAP to apply settings
+      command: dpkg-reconfigure -f noninteractive slapd
+
+    - name: Ensure OpenLDAP service is running and enabled
+      service:
+        name: slapd
+        state: started
+        enabled: yes
+
+    - name: Add initial LDAP structure (optional)
+      ldap_entry:
+        dn: "{{ ldap_base_dn }}"
+        objectClass:
+          - dcObject
+          - Organization
+        attributes:
+          dc: example
+          o: "{{ ldap_organization }}"
+        state: present
+
+    - name: Add an organizational unit (optional)
+      ldap_entry:
+        dn: ou=People,{{ ldap_base_dn }}
+        objectClass: organizationalUnit
+        attributes: null
+        ou: People
+        state: present
+
+    - name: Verify LDAP server is running
+      command: ldapsearch -x -LLL -H ldap:/// -b "{{ ldap_base_dn }}" dn
+      register: ldapsearch_result
+      changed_when: false
+
+    - name: Display LDAP search result
+      debug: null
+      var: ldapsearch_result.stdout_lines
