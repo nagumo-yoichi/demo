@@ -67,25 +67,6 @@
         state: started
         enabled: yes
 
-    - name: Add initial LDAP structure (optional)
-      ldap_entry:
-        dn: "{{ ldap_base_dn }}"
-        objectClass:
-          - dcObject
-          - Organization
-        attributes:
-          dc: example
-          o: "{{ ldap_organization }}"
-        state: present
-
-    - name: Add an organizational unit (optional)
-      ldap_entry:
-        dn: ou=People,{{ ldap_base_dn }}
-        objectClass: organizationalUnit
-        attributes: null
-        ou: People
-        state: present
-
     - name: Verify LDAP server is running
       command: ldapsearch -x -LLL -H ldap:/// -b "{{ ldap_base_dn }}" dn
       register: ldapsearch_result
