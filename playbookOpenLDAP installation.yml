@@ -1,4 +1,3 @@
----
 - name: Install and configure OpenLDAP
   hosts: all
   become: yes
