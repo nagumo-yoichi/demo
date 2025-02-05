@@ -13,9 +13,9 @@
         name: python3-apt
         state: present
 
-    - name: Update apt cache
-      apt:
-        update_cache: yes
+###   - name: Update apt cache
+###  apt:
+###     update_cache: yes
 
     - name: OpenLDAP prerequisites
       apt:
