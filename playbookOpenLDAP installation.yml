@@ -8,10 +8,10 @@
     ldap_base_dn: dc=example,dc=com
 
   tasks:
-    - name: Install python3-apt
-      apt:
-        name: python3-apt
-        state: present
+ #   - name: Install python3-apt
+  #    apt:
+  #      name: python3-apt
+   #     state: present
 
 ###   - name: Update apt cache
 ###  apt:
