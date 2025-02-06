@@ -1,81 +1,15 @@
-- name: Install and configure OpenLDAP
-  hosts: all
+- hosts: all
   become: yes
-  vars:
-    ldap_domain: example.com
-    ldap_organization: Example org.
-    ldap_admin_password: securepassword
-    ldap_base_dn: dc=example,dc=com
 
   tasks:
-    - name: Install python3-apt
-      apt:
-        name: python3-apt
-        state: present
-
     - name: Update apt cache
       apt:
         update_cache: yes
+        cache_valid_time: 3600
+      become: yes
 
-    - name: OpenLDAP prerequisites
+    - name: Install python3-apt
       apt:
-        name:
-          - ksh
-          - libtool-ltdl
-          - openssl
-          - perl
-          - lz4
+        name:  python3-apt
         state: present
-
-    - name: Install OpenLDAP and utilities
-      apt:
-        name:
-          - slapd
-          - ldap-utils
-        state: present
-
-    - name: Reconfigure OpenLDAP non-interactively
-      debconf:
-        name: slapd
-        question: slapd/domain
-        value: "{{ ldap_domain }}"
-        vtype: string
-
-    - name: Set OpenLDAP organization name
-      debconf:
-        name: slapd
-        question: slapd/organization
-        value: "{{ ldap_organization }}"
-        vtype: string
-
-    - name: Set OpenLDAP admin password
-      debconf:
-        name: slapd
-        question: slapd/password1
-        value: "{{ ldap_admin_password }}"
-        vtype: password
-
-    - name: Set OpenLDAP admin password confirmation
-      debconf:
-        name: slapd
-        question: slapd/password2
-        value: "{{ ldap_admin_password }}"
-        vtype: password
-
-    - name: Reconfigure OpenLDAP to apply settings
-      command: dpkg-reconfigure -f noninteractive slapd
-
-    - name: Ensure OpenLDAP service is running and enabled
-      service:
-        name: slapd
-        state: started
-        enabled: yes
-
-    - name: Verify LDAP server is running
-      command: ldapsearch -x -LLL -H ldap:/// -b "{{ ldap_base_dn }}" dn
-      register: ldapsearch_result
-      changed_when: false
-
-    - name: Display LDAP search result
-      debug:
-        var: ldapsearch_result.stdout_lines
+      become: yes
