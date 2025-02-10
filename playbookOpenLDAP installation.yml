@@ -27,7 +27,7 @@
         msg: "package installed successfully"
         when: apt_install_result.rc == 0
         tags:
-        - install_openldap
+          - install_openldap
 
     - name: fail if package installation was unsuccessful
       fail:
