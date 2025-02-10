@@ -1,6 +1,11 @@
 - name: Update package cache on all hosts
   hosts: all
   become: true
+  vars:
+    ldap_domain: example.com
+    ldap_organization: Example org.
+    ldap_admin_password: securepassword
+    ldap_base_dn: dc=example,dc=com
 
   tasks:
     - name: Update apt cache
@@ -8,3 +13,14 @@
       when: ansible_facts['distribution'] in ['Ubuntu']
       tags:
         - update_cache
+
+    - name: OpenLDAP prerequisites
+      apt:
+        name:
+          - ksh
+          - libtool-ltdl
+          - openssl
+          - perl
+          - lz4
+        state: present
+
