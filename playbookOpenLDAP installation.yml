@@ -1,7 +1,6 @@
 - name: install openLDAP
-  hosts: 20.244.93.151
+  hosts: all
   become: true
-  user: ubuntu2
   vars:
     ldap_domain: example.com
     ldap_organization: Example org.
