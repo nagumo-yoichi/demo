@@ -18,11 +18,18 @@
       command: apt-get install -y ksh libtool-ltdl openssl perl lz4
       when: ansible_facts['distribution'] in ['Ubuntu']
       register: apt_install_result
-      when: apt_install_result.rc != 0
+      failed_when: apt_install_result.rc != 0
       tags:
         - install_openldap
 
-    - name: check if package installation was unsuccessful
+    - name: check if package installation was successful
+      debug:
+        msg: "package installed successfully"
+        when: apt_install_result.rc == 0
+        tags:
+        - install_openldap
+
+    - name: fail if package installation was unsuccessful
       fail:
         msg: "Failed to install required packages"
         when: apt_install_result.rc != 0
