@@ -26,5 +26,3 @@
       fail:
         msg: "Failed to install required packages"
         when: apt_install_result.rc != 0
-        tags:
-          - install_openldap
