@@ -30,4 +30,4 @@
     - name: fail if package installation was unsuccessful
       fail:
         msg: "Failed to install required packages"
-      when: result.failed
+      when: result.unsucessful
