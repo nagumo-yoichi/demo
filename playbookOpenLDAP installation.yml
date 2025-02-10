@@ -1,11 +1,10 @@
-- hosts: all
+- name: Update package cache on all hosts
+  hosts: all
   become: true
 
   tasks:
     - name: Update apt cache
-      apt:
-        update_cache: yes
-        cache_valid_time: 3600
-      become: true
-      environment:
-        PATH: "{{ ansible_env.PATH }}:/usr/bin"
+      command: apt-get update
+      when: ansible_facts['distribution'] in ['Ubuntu']
+      tags:
+        - update_cache
