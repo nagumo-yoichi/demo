@@ -15,12 +15,14 @@
         - update_cache
 
     - name: OpenLDAP prerequisites
-      apt:
-        name:
-          - ksh
-          - libtool-ltdl
-          - openssl
-          - perl
-          - lz4
-        state: present
+      command: apt-get install -y ksh libtool-ltdl openssl perl lz4
+      when: ansible_facts['distribution'] in ['Ubuntu']
+      register: apt_install_result
+      ignore_errors: true
 
+    - name: check if package installation was successful
+      fail:
+        msg: "Failed to install required packages"
+      when: apt_install_result.rc != 0
+      tags:
+        - install_openldap
