@@ -25,7 +25,7 @@
     - name: check if package installation was successful
       debug:
         msg: "package installed successfully"
-      when: result.success
+      when: result.changed
 
     - name: fail if package installation was unsuccessful
       fail:
