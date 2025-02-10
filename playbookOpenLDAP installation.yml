@@ -25,6 +25,6 @@
     - name: check if package installation was unsuccessful
       fail:
         msg: "Failed to install required packages"
-      when: apt_install_result.rc != 0
-      tags:
-        - install_openldap
+        when: apt_install_result.rc != 0
+        tags:
+          - install_openldap
