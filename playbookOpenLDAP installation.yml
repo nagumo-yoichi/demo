@@ -27,7 +27,7 @@
         msg: "package installed successfully"
       when: result.changed
 
-    - name: fail if package installation was unsuccessful
-      fail:
-        msg: "Failed to install required packages"
-      when: result.unsucessful
+    #- name: fail if package installation was unsuccessful
+    #  fail:
+    #    msg: "Failed to install required packages"
+    #  when: result.unsucessful
