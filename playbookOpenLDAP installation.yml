@@ -30,6 +30,13 @@
       tags:
         - install_openldap
 
+    - name: Reconfigure OpenLDAP non-interactively
+      debconf:
+        name: slapd
+        question: slapd/domain
+        value: "{{ ldap_domain }}"
+        vtype: string
+
     - name: check if package installation was successful
       debug:
         msg: "package installed successfully"
