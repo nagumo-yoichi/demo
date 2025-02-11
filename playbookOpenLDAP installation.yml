@@ -42,6 +42,6 @@
         msg: "package installed successfully"
       when: result.changed
 
-handlers:
+     handlers:
    - name: Reconfigure slapd
      command: dpkg-reconfigure -f noninteractive slapd
