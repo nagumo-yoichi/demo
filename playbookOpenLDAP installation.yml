@@ -31,11 +31,11 @@
         - install_openldap
 
     - name: Reconfigure OpenLDAP non-interactively
-      debconf:
-        name: slapd
-        question: slapd/domain
-        value: "{{ ldap_domain }}"
-        vtype: string
+      command: >
+         echo "slapd slapd/domain string {{ ldap_domain }}" |
+         debconf-set-selections &&
+         dpkg-reconfigure -f noninteractive slapd
+      notify: Reconfigure slapd
 
     - name: check if package installation was successful
       debug:
