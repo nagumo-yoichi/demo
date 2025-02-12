@@ -30,6 +30,12 @@
       tags:
         - install_openldap
 
+     - name: Ensure dpkg is installed
+       apt:
+         name: dpkg
+         state: present
+       update_cache: yes
+
     - name: Reconfigure OpenLDAP non-interactively
       command: >
          echo "slapd slapd/domain string {{ ldap_domain }}" |
