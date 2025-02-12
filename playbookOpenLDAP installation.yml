@@ -32,9 +32,9 @@
 
     - name: Ensure dpkg is installed
        apt:
-         name: dpkg
-         state: present
-         update_cache: yes
+          name: dpkg
+       state: present
+       update_cache: yes
 
     - name: Reconfigure OpenLDAP non-interactively
       command: >
