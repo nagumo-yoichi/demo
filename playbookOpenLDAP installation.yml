@@ -30,7 +30,7 @@
       tags:
         - install_openldap
 
-     - name: Ensure dpkg is installed
+    - name: Ensure dpkg is installed
        apt:
          name: dpkg
          state: present
