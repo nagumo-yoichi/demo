@@ -31,7 +31,7 @@
         - install_openldap
 
     - name: Ensure dpkg is installed
-       apt:
+      apt:
           name: dpkg
           state: present
           update_cache: yes
