@@ -30,11 +30,13 @@
       tags:
         - install_openldap
 
-    - name: Reconfigure OpenLDAP non-interactively
+    - name: Set debconf selections for slapd
       command: >
          echo "slapd slapd/domain string {{ ldap_domain }}" |
-         debconf-set-selections &&
-         dpkg-reconfigure -f noninteractive slapd
+         debconf-set-selections
+
+    - name: Reconfigure slapd
+      command: dpkg-reconfigure -f noninteractive slapd
       notify: Reconfigure slapd
 
     - name: check if package installation was successful
@@ -43,5 +45,5 @@
       when: result.changed
 
   handlers:
-    - name: Reconfigure slapd
+    - name: Reconfigure slapd handler
       command: dpkg-reconfigure -f noninteractive slapd
