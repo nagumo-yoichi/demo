@@ -4,7 +4,7 @@
   vars:
     ldap_domain: example.com
     ldap_organization: Example org.
-    ldap_admin_password: securepassword
+    ldap_admin_password: password1
     ldap_base_dn: dc=example,dc=com
 
   tasks:
@@ -30,20 +30,29 @@
       tags:
         - install_openldap
 
-    - name: Set debconf selections for slapd
-      command: >
-         echo "slapd slapd/domain string {{ ldap_domain }}" |
-         debconf-set-selections
+    - name: Set up admin password
+      ansible.builtin.debconf:
+        name: slapd
+        question: slapd/admin_password
+        value: "{{ ldap_admin_password }}"
+        vtype: password
+        
+    - name: Set up admin password confirmation
+      ansible.builtin.debconf:
+        name: slapd
+        question: slapd/admin_password_again
+        value: "{{ ldap_admin_password }}"
+        vtype: password
 
-    - name: Reconfigure slapd
-      command: dpkg-reconfigure -f noninteractive slapd
-      notify: Reconfigure slapd
+#    - name: Reconfigure slapd
+ #     command: dpkg-reconfigure -f noninteractive slapd
+  #    notify: Reconfigure slapd
 
     - name: check if package installation was successful
       debug:
         msg: "package installed successfully"
       when: result.changed
 
-  handlers:
-    - name: Reconfigure slapd handler
-      command: dpkg-reconfigure -f noninteractive slapd
+#  handlers:
+#    - name: Reconfigure slapd handler
+#      command: dpkg-reconfigure -f noninteractive slapd
