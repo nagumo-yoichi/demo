@@ -36,6 +36,8 @@
         question: slapd/admin_password
         value: "{{ ldap_admin_password }}"
         vtype: password
+        environment: 
+          DEBIAN_FRONTEND: noninteractive
         
     - name: Set up admin password confirmation
       ansible.builtin.debconf:
@@ -43,6 +45,8 @@
         question: slapd/admin_password_again
         value: "{{ ldap_admin_password }}"
         vtype: password
+        environment: 
+          DEBIAN_FRONTEND: noninteractive
 
 #    - name: Reconfigure slapd
  #     command: dpkg-reconfigure -f noninteractive slapd
