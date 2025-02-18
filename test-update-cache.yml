@@ -1,4 +1,3 @@
----
 - name: Update apta cache
   apt:
    update_cache: yes
