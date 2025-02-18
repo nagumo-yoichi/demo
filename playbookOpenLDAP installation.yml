@@ -54,7 +54,7 @@
       when: result.changed
 
   handlers:
-    - name: Reconfigure slapd handler
+    - name: Reconfigure slapd
       command: dpkg-reconfigure -f noninteractive slapd
       environment:
         DEBIAN_FRONTEND: noninteractive
