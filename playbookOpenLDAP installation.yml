@@ -8,53 +8,12 @@
     ldap_base_dn: dc=example,dc=com
 
   tasks:
-    - name: Update apt cache
-      command: apt-get update
-      when: ansible_facts['distribution'] in ['Ubuntu']
-      tags:
-        - update_cache
-
-    - name: OpenLDAP prerequisites
-      command: apt-get install -y ksh libtool-ltdl openssl perl lz4
-      when: ansible_facts['distribution'] in ['Ubuntu']
-      register: result
-      failed_when: result.failed
-      tags:
-        - install_openldap
-
-    - name: Install OpenLDAP and utilities
-      command: apt-get install -y slapd ldap-utils
-      when: ansible_facts['distribution'] in ['Ubuntu']
-      register: result
-      failed_when: result.failed
-      tags:
-        - install_openldap
-
-    - name: Set up admin password
-      ansible.builtin.command: > 
-        debconf-set-selections <<< "slapd slapd/root_password password1 {{ ldap_admin_password }}"
-      environment:
-        DEBIAN_FRONTEND: noninteractive
-      notify: Reconfigure slapd
-        
-    - name: Confirm password
-      ansible.builtin.command: > 
-        debconf-set-selections <<< "slapd slapd/root_password_again password1 {{ ldap_admin_password }}"
-      environment:
-        DEBIAN_FRONTEND: noninteractive
-      notify: Reconfigure slapd
-
-#    - name: Reconfigure slapd
- #     command: dpkg-reconfigure -f noninteractive slapd
-  #    notify: Reconfigure slapd
-
-    - name: check if package installation was successful
-      debug:
-        msg: "package installed successfully"
-      when: result.changed
-
-  handlers:
-    - name: Reconfigure slapd
-      command: dpkg-reconfigure -f noninteractive slapd
-      environment:
-        DEBIAN_FRONTEND: noninteractive
+    - name: reconfigure slapd
+      ansible.builtin.command:
+       cmd: dpkg-reconfigure -f noninteractive slapd
+      become: true
+      register: slapd_reconfigure_ouput
+    
+    - name: show the result of the reconfigure command
+      ansible.builtin.debug:
+       msg: "{{ slapd_reconfigure_output.stdout }}"
